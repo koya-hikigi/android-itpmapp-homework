@@ -75,14 +75,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 TitleDataItem item = (TitleDataItem)adapterView.getItemAtPosition(position);
-                mAdapter.remove(item);
+//                mAdapter.remove(item);
 //                Log.d(MainActivity.class.getSimpleName(), position + "番目のリストアイテムが長押しされました");
 //                String title = String.valueOf(adapterView.getItemAtPosition(position));
 //                mAdapter.remove(title);
 //                Toast.makeText(MainActivity.this, title +"を削除しました", Toast.LENGTH_SHORT).show();
 //                return false;
+
+                // 1.データベースのインスタンスを取得する
+                SQLiteDatabase db = new ITPMDataOpenHelper(MainActivity.this).getWritableDatabase();
+
+                // 2.データベースからデータを削除する処理
+                db.delete(ITPMDataOpenHelper.TABLE_NAME, ITPMDataOpenHelper._ID + "=" + item.getId(), null);
+
+                // 3.データベースを閉じる
+                db.close();
+
+                // 4.画面表示を更新する
+                displayDataList();
+
                 Toast.makeText(MainActivity.this, item.getTitle() + "を削除しました", Toast.LENGTH_SHORT).show();
-                return false;
+                return true;
             }
         });
 

@@ -87,11 +87,24 @@ public class EditActivity extends AppCompatActivity {
                     } else {
                         // データベースのデータを更新する
                         // 1.ContentValuesのインスタンスに変更したい行のプライマリーキーとデータを入れる
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(ITPMDataOpenHelper._ID, selectId);
+                        contentValues.put(ITPMDataOpenHelper.COLUMN_TITLE, mTitleEditText.getText().toString());
 
                         // 2.SQLiteDatabaseのインスタンスを用意する
+                        SQLiteDatabase db = new ITPMDataOpenHelper(EditActivity.this).getWritableDatabase();
+
                         // 3.SQLiteDatabaseインスタンスの「update」メソッドを利用してContentValuesの
                         //   データでデータベースの内容を更新する
-                        // 4.
+                        db.update(ITPMDataOpenHelper.TABLE_NAME,
+                                contentValues,
+                                ITPMDataOpenHelper._ID + "=" + selectId,
+                                null
+                        );
+
+                        // 4.データベースを閉じる
+                        db.close();
+                        finish();
                     }
                 }
             }
