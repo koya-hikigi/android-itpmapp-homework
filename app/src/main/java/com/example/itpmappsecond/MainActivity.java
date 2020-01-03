@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 TitleDataItem item =(TitleDataItem)adapterView.getItemAtPosition(position);
-                Intent intent = EditActivity.createIntent(MainActivity.this, item.getTitle());
+                Intent intent = EditActivity.createIntent(MainActivity.this,item.getId(), item.getTitle());
 //                Log.d(MainActivity.class.getSimpleName(), position + "番目のリストアイテムが押されました");
 //                String title = String.valueOf(adapterView.getItemAtPosition(position));
 //                Intent intent = EditActivity.createIntent(MainActivity.this, title);
