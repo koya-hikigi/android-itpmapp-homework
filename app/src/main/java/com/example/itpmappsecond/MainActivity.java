@@ -2,8 +2,11 @@ package com.example.itpmappsecond;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import com.example.itpmappsecond.databases.ITPMDataOpenHelper;
 import com.example.itpmappsecond.pojo.TitleDataItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -103,19 +106,50 @@ public class MainActivity extends AppCompatActivity {
         // 1.アダプター内のデータをリセットする
         mAdapter.clear();
 
-        // 2.新しいデータをアダプターに設定する(セットする)
+//        // 2.新しいデータをアダプターに設定する(セットする)
 //        List<String> dataList =  Arrays.asList("ホーム", "事業内容", "企業情報", "採用情報", "お問い合わせ");
-        List<TitleDataItem> dataList = Arrays.asList(
-                    new TitleDataItem(1, "ホーム"),
-                    new TitleDataItem(2, "事業内容"),
-                    new TitleDataItem(3, "企業情報"),
-                    new TitleDataItem(4, "採用情報"),
-                    new TitleDataItem(5, "お問い合わせ")
-                    );
-        mAdapter.addAll(dataList);
+//        List<TitleDataItem> dataList = Arrays.asList(
+//                    new TitleDataItem(1, "ホーム"),
+//                    new TitleDataItem(2, "事業内容"),
+//                    new TitleDataItem(3, "企業情報"),
+//                    new TitleDataItem(4, "採用情報"),
+//                    new TitleDataItem(5, "お問い合わせ")
+//                    );
+        // 2.表示に使うデータを入れるリスト
+        List<TitleDataItem> itemList = new ArrayList<>();
 
+        // 3.読み下記用のデータベースインスタンスを取得する
+        SQLiteDatabase db = new ITPMDataOpenHelper(this).getWritableDatabase();
 
-        // 3.アダプターにデータが通知されたことを通知する
+        // 4.データベースから欲しいデータのカーソルを取り出す処理
+        Cursor cursor = db.query(
+                ITPMDataOpenHelper.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        // 5.カーソルを使ってデータを取り出す処理
+        while (cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex(ITPMDataOpenHelper._ID));
+            String title = cursor.getString(cursor.getColumnIndex(ITPMDataOpenHelper.COLUMN_TITLE));
+            itemList.add(new TitleDataItem(id, title));
+        }
+
+        // 6.カーソルを閉じる
+        cursor.close();
+
+        // 7.データベースを閉じる
+        db.close();
+
+        // 8.新しいデータをアダプターに設定する(セットする)
+//        mAdapter.addAll(dataList);
+        mAdapter.addAll(itemList);
+
+        // 9.アダプターにデータが変更されたことを通知する
         mAdapter.notifyDataSetChanged();
 
     }
